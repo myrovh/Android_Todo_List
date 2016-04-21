@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
-    private Reminder[] todoList;
+    private ArrayList<Reminder> data = new ArrayList<>();
 
     // Constructor for data
-    public TodoAdapter(Reminder[] todoDataList) {
-        todoList = todoDataList;
+    public TodoAdapter(ArrayList<Reminder> todoDataList) {
+        data = todoDataList;
     }
 
     // Create new views (invoked by the layout manager)
@@ -26,15 +28,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.titleView.setText(todoList[position].getTitle());
-        holder.descriptionView.setText(todoList[position].getDescription());
-        holder.dateView.setText(todoList[position].getDueDate().toString());
+        holder.titleView.setText(data.get(position).getTitle());
+        holder.descriptionView.setText(data.get(position).getDescription());
+        holder.dateView.setText(data.get(position).getDueDate().toString());
 
     }
 
     @Override
     public int getItemCount() {
-        return todoList.length;
+        return data.size();
     }
 
     //Define ViewHolder for Adapter
@@ -48,18 +50,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             titleView = (TextView) v.findViewById(R.id.titleView);
             descriptionView = (TextView) v.findViewById(R.id.descriptionView);
             dateView = (TextView) v.findViewById(R.id.dateView);
-        }
-
-        public TextView getTitleView() {
-            return titleView;
-        }
-
-        public TextView getDescriptionView() {
-            return descriptionView;
-        }
-
-        public TextView getDateView() {
-            return dateView;
         }
     }
 }
