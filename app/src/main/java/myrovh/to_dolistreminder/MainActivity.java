@@ -13,6 +13,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Reminder> todoData = new ArrayList<>();
+    private RecyclerView.Adapter globalAdapter = new TodoAdapter(todoData);
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,22 +27,15 @@ public class MainActivity extends AppCompatActivity {
         todoData.add(new Reminder("Test", "First Test Entry", Calendar.getInstance()));
         todoData.add(new Reminder("Test2", "Second Test Entry", Calendar.getInstance()));
         todoData.add(new Reminder("Test3", "Third Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test4", "Forth Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test5", "Fifth Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test6", "Sixth Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
+        globalAdapter.notifyDataSetChanged();
 
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);
         RecyclerView.LayoutManager todoLayout = new LinearLayoutManager(this);
         todoRecyclerView.setLayoutManager(todoLayout);
+        todoRecyclerView.hasFixedSize();
         RecyclerView.Adapter adapter = new TodoAdapter(todoData);
-        todoRecyclerView.setAdapter(adapter);
+        todoRecyclerView.setAdapter(globalAdapter);
     }
 
     @Override
@@ -54,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_todo:
+                //Call item creation intent here
+                todoData.add(new Reminder("Test8", "Eighth Test Entry", Calendar.getInstance()));
+                globalAdapter.notifyItemInserted(todoData.size() - 1);
                 return true;
             default:
                 // The user's action was not recognized.
