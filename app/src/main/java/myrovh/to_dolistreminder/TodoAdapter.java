@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private ArrayList<Reminder> data = new ArrayList<>();
@@ -30,7 +33,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         // - replace the contents of the view with that element
         holder.titleView.setText(data.get(position).getTitle());
         holder.descriptionView.setText(data.get(position).getDescription());
-        holder.dateView.setText(data.get(position).getDueDate().toString());
+        GregorianCalendar calendar = (GregorianCalendar) data.get(position).getDueDate();
+        String dateString = calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        holder.dateView.setText(dateString);
 
     }
 

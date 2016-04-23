@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Reminder> todoData = new ArrayList<>();
@@ -16,13 +16,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Set test data
-        todoData.add(new Reminder("Test", "First Test Entry", new Date()));
-        todoData.add(new Reminder("Test2", "Second Test Entry", new Date()));
-        todoData.add(new Reminder("Test3", "Third Test Entry", new Date()));
-        todoData.add(new Reminder("Test4", "Forth Test Entry", new Date()));
-        todoData.add(new Reminder("Test5", "Fifth Test Entry", new Date()));
-        todoData.add(new Reminder("Test6", "Sixth Test Entry", new Date()));
-        todoData.add(new Reminder("Test7", "Seventh Test Entry", new Date()));
+        todoData.add(new Reminder("Test", "First Test Entry", Calendar.getInstance()));
+        todoData.add(new Reminder("Test2", "Second Test Entry", Calendar.getInstance()));
+        todoData.add(new Reminder("Test3", "Third Test Entry", Calendar.getInstance()));
+        todoData.add(new Reminder("Test4", "Forth Test Entry", Calendar.getInstance()));
+        todoData.add(new Reminder("Test5", "Fifth Test Entry", Calendar.getInstance()));
+        todoData.add(new Reminder("Test6", "Sixth Test Entry", Calendar.getInstance()));
+        todoData.add(new Reminder("Test7", "Seventh Test Entry", Calendar.getInstance()));
 
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);

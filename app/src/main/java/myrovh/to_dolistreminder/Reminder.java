@@ -1,21 +1,21 @@
 package myrovh.to_dolistreminder;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Reminder {
     String title;
     String description;
-    Date dueDate;
+    Calendar dueDate;
     boolean isComplete;
 
     public Reminder() {
         this.title = "Default";
         this.description = "Default Todo";
-        this.dueDate = new Date();
+        this.dueDate = Calendar.getInstance();
         isComplete = false;
     }
 
-    public Reminder(String title, String description, Date dueDate) {
+    public Reminder(String title, String description, Calendar dueDate) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -38,11 +38,11 @@ public class Reminder {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public Calendar getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(Calendar dueDate) {
         this.dueDate = dueDate;
     }
 
