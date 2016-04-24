@@ -12,11 +12,13 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
+    private static OnItemClickListener listener;
     private ArrayList<Reminder> data = new ArrayList<>();
 
     // Constructor for data
     public TodoAdapter(ArrayList<Reminder> todoDataList) {
         data = todoDataList;
+        this.listener = null;
     }
 
     // Create new views (invoked by the layout manager)
@@ -44,8 +46,18 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         return data.size();
     }
 
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
+    }
+
     //Define ViewHolder for Adapter
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleView;
         private final TextView descriptionView;
         private final TextView dateView;
@@ -55,6 +67,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             titleView = (TextView) v.findViewById(R.id.titleView);
             descriptionView = (TextView) v.findViewById(R.id.descriptionView);
             dateView = (TextView) v.findViewById(R.id.dateView);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onItemClick(v, getLayoutPosition());
+                    }
+                }
+            });
         }
     }
 }

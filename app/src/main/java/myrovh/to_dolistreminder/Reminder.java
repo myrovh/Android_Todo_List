@@ -1,7 +1,10 @@
 package myrovh.to_dolistreminder;
 
+import org.parceler.Parcel;
+
 import java.util.Calendar;
 
+@Parcel
 public class Reminder {
     String title;
     String description;
@@ -9,17 +12,13 @@ public class Reminder {
     boolean isComplete;
 
     public Reminder() {
-        this.title = "Default";
-        this.description = "Default Todo";
-        this.dueDate = Calendar.getInstance();
-        isComplete = false;
     }
 
-    public Reminder(String title, String description, Calendar dueDate) {
+    public Reminder(String title, String description, Calendar dueDate, boolean isComplete) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
-        isComplete = false;
+        this.isComplete = isComplete;
     }
 
     public String getTitle() {
