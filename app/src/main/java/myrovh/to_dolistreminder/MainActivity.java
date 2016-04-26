@@ -14,6 +14,8 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity {
     final static int REQUEST_NEW = 20;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         todoData.add(new Reminder("Test", "First Test Entry", Calendar.getInstance(), false));
         todoData.add(new Reminder("Test2", "Second Test Entry", Calendar.getInstance(), false));
         todoData.add(new Reminder("Test3", "Third Test Entry", Calendar.getInstance(), false));
-        globalAdapter.notifyDataSetChanged();
+        listRefresh();
 
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_add_todo:
                 //Call item creation intent here
                 todoData.add(new Reminder("Test8", "Eighth Test Entry", Calendar.getInstance(), false));
-                globalAdapter.notifyItemInserted(todoData.size() - 1);
+                listRefresh();
                 //LaunchAddTodo();
                 return true;
             default:
@@ -74,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Calls the edit todo activity but with a '-1' value. edit todo should populate default values in this case
     public void LaunchAddTodo() {
         Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
+        i.putExtra("position", -1);
         startActivityForResult(i, REQUEST_NEW);
     }
 
@@ -94,9 +98,20 @@ public class MainActivity extends AppCompatActivity {
             int insertPosition = returnData.getIntExtra("position", -1);
             if (insertPosition != -1) {
                 todoData.set(insertPosition, resultTodo);
-                globalAdapter.notifyItemChanged(insertPosition);
+                listRefresh();
             }
         }
+    }
+
+    //Will sort the array list and then get the recyclerList to refresh its whole database
+    //Might be overly expensive to refresh the whole dataset but I don't know how else to account for the many possible changes that a sort could cause
+    public void listRefresh() {
+        Collections.sort(todoData, new Comparator<Reminder>() {
+            public int compare(Reminder r1, Reminder r2) {
+                return r1.getDueDate().compareTo(r2.getDueDate());
+            }
+        });
+        globalAdapter.notifyDataSetChanged();
     }
 }
 
