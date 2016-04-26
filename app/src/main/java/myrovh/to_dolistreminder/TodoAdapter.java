@@ -1,5 +1,6 @@
 package myrovh.to_dolistreminder;
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.titleView.setText(data.get(position).getTitle());
+        if (data.get(position).isComplete()) {
+            holder.titleView.setPaintFlags(holder.titleView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         holder.descriptionView.setText(data.get(position).getDescription());
         GregorianCalendar calendar = (GregorianCalendar) data.get(position).getDueDate();
         String dateString = calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);

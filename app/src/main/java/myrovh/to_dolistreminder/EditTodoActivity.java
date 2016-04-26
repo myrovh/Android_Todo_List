@@ -50,7 +50,7 @@ public class EditTodoActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.todo, menu);
+        getMenuInflater().inflate(R.menu.menu_todo, menu);
         return true;
     }
 

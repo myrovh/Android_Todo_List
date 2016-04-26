@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         //RecyclerView.Adapter adapter = new TodoAdapter(todoData);
         todoRecyclerView.setAdapter(globalAdapter);
 
-        //Set Recycler View Listener (open edit todo activity on item click)
+        //Set Recycler View Listener (open edit EditTodoActivity activity on item click)
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
