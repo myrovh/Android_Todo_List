@@ -1,13 +1,16 @@
 package myrovh.to_dolistreminder;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -17,7 +20,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class EditTodoActivity extends AppCompatActivity {
+public class EditTodoActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private Reminder editTodo;
     private int todoPositon;
     private TextInputLayout titleText;
@@ -73,7 +76,7 @@ public class EditTodoActivity extends AppCompatActivity {
     }
 
     public void SetDueDate(View v) {
-
+        showDatePickerDialog(v);
     }
 
     //Takes the values stored inside the views and stores them inside the Reminder variable
@@ -95,4 +98,20 @@ public class EditTodoActivity extends AppCompatActivity {
         String calString = cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         dueDateView.setText(calString);
     }
+
+    //Create a date picker dialog
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    //Apply returned date picker value when it reports onDateSet via listener
+    @Override
+    public void onDateSet(DatePicker v, int year, int month, int day) {
+        Calendar newDate = Calendar.getInstance();
+        newDate.set(year, month, day);
+        editTodo.setDueDate(newDate);
+        UpdateView();
+    }
 }
+
