@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_add_todo:
                 //Call item creation intent here
-                todoData.add(new Reminder("Test8", "Eighth Test Entry", Calendar.getInstance(), false));
-                listRefresh();
-                //LaunchAddTodo();
+                LaunchAddTodo();
                 return true;
             default:
                 // The user's action was not recognized.
@@ -94,12 +92,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent returnData) {
         if (resultCode == 1 && requestCode == REQUEST_EDIT) {
-            Reminder resultTodo = (Reminder) Parcels.unwrap(returnData.getParcelableExtra("todo"));
+            Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
             int insertPosition = returnData.getIntExtra("position", -1);
             if (insertPosition != -1) {
                 todoData.set(insertPosition, resultTodo);
                 listRefresh();
             }
+        } else if (resultCode == 1 && requestCode == REQUEST_NEW) {
+            Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
+            todoData.add(resultTodo);
+            listRefresh();
         }
     }
 

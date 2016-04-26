@@ -44,11 +44,15 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
         dueDateView = (TextView) findViewById(R.id.dateView);
 
         //Get intent data
-        editTodo = (Reminder) Parcels.unwrap(getIntent().getParcelableExtra("todo"));
-        todoPositon = (int) getIntent().getIntExtra("position", -1);
-
-        //Set existing values
-        UpdateView();
+        todoPositon = getIntent().getIntExtra("position", -1);
+        //Set existing values if an existing todo has been parcled
+        if (todoPositon != -1) {
+            editTodo = Parcels.unwrap(getIntent().getParcelableExtra("todo"));
+            UpdateView();
+        } else {
+            editTodo = new Reminder();
+            editTodo.setDueDate(Calendar.getInstance());
+        }
     }
 
     @Override
@@ -62,11 +66,12 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
         switch (item.getItemId()) {
             case R.id.action_apply_todo:
                 Intent returnData = new Intent();
-                UpdateData();
-                returnData.putExtra("todo", Parcels.wrap(editTodo));
-                returnData.putExtra("position", todoPositon);
-                setResult(1, returnData);
-                this.finish();
+                if (UpdateData()) {
+                    returnData.putExtra("todo", Parcels.wrap(editTodo));
+                    returnData.putExtra("position", todoPositon);
+                    setResult(1, returnData);
+                    this.finish();
+                }
                 return true;
             default:
                 // The user's action was not recognized.
@@ -80,11 +85,18 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
     }
 
     //Takes the values stored inside the views and stores them inside the Reminder variable
-    public void UpdateData() {
-        editTodo.setTitle(titleText.getEditText().getText().toString());
+    //Returns false if a title is not set (will not finish updating other variables)
+    public boolean UpdateData() {
+        if (titleText.getEditText().getText().length() > 0) {
+            editTodo.setTitle(titleText.getEditText().getText().toString());
+        } else {
+            titleText.setError("Enter at least one character");
+            return false;
+        }
         editTodo.setDescription(descriptionText.getEditText().getText().toString());
         editTodo.setComplete(doneSwitch.isChecked());
         //Date is not updated here but in the SetDueDate function
+        return true;
     }
 
     //Takes the values stored inside the Reminder variable and displays them in the views
