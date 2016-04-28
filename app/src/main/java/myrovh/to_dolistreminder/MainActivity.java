@@ -40,10 +40,11 @@ public class MainActivity extends AppCompatActivity {
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);
         RecyclerView.LayoutManager todoLayout = new LinearLayoutManager(this);
-        todoRecyclerView.setLayoutManager(todoLayout);
-        todoRecyclerView.hasFixedSize();
-        //RecyclerView.Adapter adapter = new TodoAdapter(todoData);
-        todoRecyclerView.setAdapter(globalAdapter);
+        if (todoRecyclerView != null) {
+            todoRecyclerView.setLayoutManager(todoLayout);
+            todoRecyclerView.hasFixedSize();
+            todoRecyclerView.setAdapter(globalAdapter);
+        }
 
         //Set Recycler View Listener (open edit EditTodoActivity activity on item click)
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {

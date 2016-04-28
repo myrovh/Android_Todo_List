@@ -1,6 +1,5 @@
 package myrovh.to_dolistreminder;
 
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;

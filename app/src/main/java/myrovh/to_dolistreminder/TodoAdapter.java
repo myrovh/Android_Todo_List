@@ -19,7 +19,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     // Constructor for data
     public TodoAdapter(ArrayList<Reminder> todoDataList) {
         data = todoDataList;
-        this.listener = null;
+        listener = null;
     }
 
     // Create new views (invoked by the layout manager)
@@ -51,8 +51,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     }
 
     // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public void setOnItemClickListener(OnItemClickListener inListener) {
+        listener = inListener;
     }
 
     // Define the listener interface

@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class EditTodoActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private Reminder editTodo;
-    private int todoPositon;
+    private int todoPosition;
     private TextInputLayout titleText;
     private TextInputLayout descriptionText;
     private Switch doneSwitch;
@@ -44,9 +44,9 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
         dueDateView = (TextView) findViewById(R.id.dateView);
 
         //Get intent data
-        todoPositon = getIntent().getIntExtra("position", -1);
-        //Set existing values if an existing todo has been parcled
-        if (todoPositon != -1) {
+        todoPosition = getIntent().getIntExtra("position", -1);
+        //Set existing values if an existing todo has been parceled
+        if (todoPosition != -1) {
             editTodo = Parcels.unwrap(getIntent().getParcelableExtra("todo"));
             UpdateView();
         } else {
@@ -68,7 +68,7 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
                 Intent returnData = new Intent();
                 if (UpdateData()) {
                     returnData.putExtra("todo", Parcels.wrap(editTodo));
-                    returnData.putExtra("position", todoPositon);
+                    returnData.putExtra("position", todoPosition);
                     setResult(1, returnData);
                     this.finish();
                 }
@@ -123,7 +123,7 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
         Calendar newDate = Calendar.getInstance();
         newDate.set(year, month, day);
         editTodo.setDueDate(newDate);
-        UpdateView();
+        UpdateView(); //TODO data sitting in text views that has not been applied is being destroyed here
     }
 }
 
