@@ -1,7 +1,9 @@
 package myrovh.to_dolistreminder;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +22,10 @@ import java.util.Comparator;
 public class MainActivity extends AppCompatActivity {
     final static int REQUEST_NEW = 20;
     final static int REQUEST_EDIT = 30;
+    final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
     private TodoAdapter globalAdapter = new TodoAdapter(todoData);
+    private ReminderDatabase database;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +35,27 @@ public class MainActivity extends AppCompatActivity {
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(appToolbar);
 
-        //Set test data
-        todoData.add(new Reminder(1, "Test", "First Test Entry", Calendar.getInstance(), false));
-        todoData.add(new Reminder(2, "Test2", "Second Test Entry", Calendar.getInstance(), false));
-        todoData.add(new Reminder(3, "Test3", "Third Test Entry", Calendar.getInstance(), false));
-        listRefresh();
+        //Get database helper
+        database = new ReminderDatabase(getApplicationContext());
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                boolean isFirstStart = getPrefs.getBoolean(SETTING_FIRSTSTART, true);
+                if (isFirstStart) {
+                    database.addReminder(new Reminder(1, "Test", "First Test Entry", Calendar.getInstance(), false));
+                    database.addReminder(new Reminder(2, "Test2", "Second Test Entry", Calendar.getInstance(), false));
+
+                    SharedPreferences.Editor e = getPrefs.edit();
+                    e.putBoolean(SETTING_FIRSTSTART, false);
+                    e.apply();
+                }
+            }
+        });
+
+        //If this is the first time running the app insert some test data into the database
+        t.start();
 
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);
@@ -53,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 LaunchEditTodo(position);
             }
         });
+
+        listRefresh();
     }
 
     @Override
@@ -96,19 +118,20 @@ public class MainActivity extends AppCompatActivity {
             Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
             int insertPosition = returnData.getIntExtra("position", -1);
             if (insertPosition != -1) {
-                todoData.set(insertPosition, resultTodo);
+                database.editReminder(resultTodo);
                 listRefresh();
             }
         } else if (resultCode == 1 && requestCode == REQUEST_NEW) {
             Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
-            todoData.add(resultTodo);
+            database.addReminder(resultTodo);
             listRefresh();
         }
     }
 
-    //Will sort the array list and then get the recyclerList to refresh its whole database
-    //Might be overly expensive to refresh the whole dataset but I don't know how else to account for the many possible changes that a sort could cause
+    //Fetch all reminders from the database then sort
     private void listRefresh() {
+        todoData.clear();
+        todoData.addAll(database.getAllReminders());
         Collections.sort(todoData, new Comparator<Reminder>() {
             public int compare(Reminder r1, Reminder r2) {
                 return r1.getDueDate().compareTo(r2.getDueDate());

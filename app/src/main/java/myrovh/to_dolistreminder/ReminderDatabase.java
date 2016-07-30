@@ -2,9 +2,14 @@ package myrovh.to_dolistreminder;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 class ReminderDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "reminderDatabase";
@@ -17,17 +22,10 @@ class ReminderDatabase extends SQLiteOpenHelper {
     private static final String KEY_REMINDERS_DUEDATE = "dueDate";
     private static final String KEY_REMINDERS_COMPLETE = "complete";
 
-    private static ReminderDatabase singleton;
+    private static final String QUERY_ALLREMINDERS = String.format("SELECT * FROM %s", TABLE_REMINDERS);
 
-    private ReminderDatabase(Context context) {
+    ReminderDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    public static ReminderDatabase getInstance(Context context) {
-        if (singleton == null) {
-            singleton = new ReminderDatabase(context.getApplicationContext());
-        }
-        return singleton;
     }
 
     private ContentValues createContentValues(Reminder reminder) {
@@ -49,6 +47,8 @@ class ReminderDatabase extends SQLiteOpenHelper {
                 KEY_REMINDERS_DUEDATE + " LONG" + ")";
 
         sqLiteDatabase.execSQL(CREATE_REMINDERS_TABLE);
+
+        //addReminder(new Reminder(3, "Internal1", "Database Creation Reminder", Calendar.getInstance(), false));
     }
 
     @Override
@@ -61,7 +61,7 @@ class ReminderDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public void addReminder(Reminder reminder) {
+    void addReminder(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
 
         db.beginTransaction();
@@ -78,7 +78,7 @@ class ReminderDatabase extends SQLiteOpenHelper {
 
     //Edits a reminder that already exists in the database by replacing it by the gives reminder object
     //Transaction will only be successful if a single row is edited
-    public void editReminder(Reminder reminder) {
+    void editReminder(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
 
         db.beginTransaction();
@@ -105,5 +105,38 @@ class ReminderDatabase extends SQLiteOpenHelper {
             Log.d("DATABASE", "Error while trying to edit a reminder");
         }
         db.endTransaction();
+    }
+
+    ArrayList<Reminder> getAllReminders() {
+        ArrayList<Reminder> reminderList = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(QUERY_ALLREMINDERS, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    Reminder newReminder = new Reminder(
+                            cursor.getInt(cursor.getColumnIndex(KEY_REMINDERS_ID)),
+                            cursor.getString(cursor.getColumnIndex(KEY_REMINDERS_TITLE)),
+                            cursor.getString(cursor.getColumnIndex(KEY_REMINDERS_DESCRIPTION)),
+                            dateToCalendar(new Date(cursor.getLong(cursor.getColumnIndex(KEY_REMINDERS_DUEDATE)))),
+                            1 == cursor.getInt(cursor.getColumnIndex(KEY_REMINDERS_COMPLETE)));
+                    reminderList.add(newReminder);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d("DATABASE", "There was an error while extracting reminder objects from the database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        Log.d("DATABASE", "Get All Reminders Called. There are " + reminderList.size() + " reminders in the list.");
+        return reminderList;
+    }
+
+    private Calendar dateToCalendar(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 }

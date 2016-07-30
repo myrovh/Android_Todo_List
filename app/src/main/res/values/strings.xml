@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">To-Do List/Reminder</string>
+    <string name="app_name">Reminder List</string>
     <string name="action_add_todo">Add</string>
     <string name="completed">Completed</string>
     <string name="action_apply_todo">Save</string>
