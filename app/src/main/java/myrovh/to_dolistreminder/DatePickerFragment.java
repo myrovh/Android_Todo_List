@@ -1,8 +1,8 @@
 package myrovh.to_dolistreminder;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -11,7 +11,7 @@ import android.widget.DatePicker;
 import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-    DatePickerDialog.OnDateSetListener listener;
+    private DatePickerDialog.OnDateSetListener listener;
 
     @NonNull
     @Override
@@ -25,7 +25,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
 
     @Override
-    public void onAttach(Activity a) {
+    public void onAttach(Context a) {
         super.onAttach(a);
         try {
             listener = (DatePickerDialog.OnDateSetListener) a;

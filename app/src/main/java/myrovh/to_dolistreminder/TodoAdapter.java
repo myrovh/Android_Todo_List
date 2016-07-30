@@ -12,12 +12,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
+class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private static OnItemClickListener listener;
     private ArrayList<Reminder> data = new ArrayList<>();
 
     // Constructor for data
-    public TodoAdapter(ArrayList<Reminder> todoDataList) {
+    TodoAdapter(ArrayList<Reminder> todoDataList) {
         data = todoDataList;
         listener = null;
     }
@@ -51,22 +51,22 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     }
 
     // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(OnItemClickListener inListener) {
+    void setOnItemClickListener(OnItemClickListener inListener) {
         listener = inListener;
     }
 
     // Define the listener interface
-    public interface OnItemClickListener {
+    interface OnItemClickListener {
         void onItemClick(View v, int position);
     }
 
     //Define ViewHolder for Adapter
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleView;
         private final TextView descriptionView;
         private final TextView dateView;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             titleView = (TextView) v.findViewById(R.id.titleView);
             descriptionView = (TextView) v.findViewById(R.id.descriptionView);

@@ -86,7 +86,7 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
 
     //Takes the values stored inside the views and stores them inside the Reminder variable
     //Returns false if a title is not set (will not finish updating other variables)
-    public boolean UpdateData() {
+    private boolean UpdateData() {
         if (titleText.getEditText().getText().length() > 0) {
             editTodo.setTitle(titleText.getEditText().getText().toString());
         } else {
@@ -100,7 +100,7 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
     }
 
     //Takes the values stored inside the Reminder variable and displays them in the views
-    public void UpdateView() {
+    private void UpdateView() {
         titleText.getEditText().setText(editTodo.getTitle());
         descriptionText.getEditText().setText(editTodo.getDescription());
         if (editTodo.isComplete) {
@@ -112,7 +112,7 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
     }
 
     //Create a date picker dialog
-    public void showDatePickerDialog(View v) {
+    private void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
