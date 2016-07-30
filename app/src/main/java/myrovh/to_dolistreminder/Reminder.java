@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 @Parcel
 public class Reminder {
+    int id;
     String title;
     String description;
     Calendar dueDate;
@@ -14,11 +15,16 @@ public class Reminder {
     Reminder() {
     }
 
-    Reminder(String title, String description, Calendar dueDate, boolean isComplete) {
+    Reminder(int id, String title, String description, Calendar dueDate, boolean isComplete) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.isComplete = isComplete;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -43,6 +49,10 @@ public class Reminder {
 
     void setDueDate(Calendar dueDate) {
         this.dueDate = dueDate;
+    }
+
+    Long getDueDateAsEpoc() {
+        return dueDate.getTimeInMillis();
     }
 
     boolean isComplete() {

@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(appToolbar);
 
         //Set test data
-        todoData.add(new Reminder("Test", "First Test Entry", Calendar.getInstance(), false));
-        todoData.add(new Reminder("Test2", "Second Test Entry", Calendar.getInstance(), false));
-        todoData.add(new Reminder("Test3", "Third Test Entry", Calendar.getInstance(), false));
+        todoData.add(new Reminder(1, "Test", "First Test Entry", Calendar.getInstance(), false));
+        todoData.add(new Reminder(2, "Test2", "Second Test Entry", Calendar.getInstance(), false));
+        todoData.add(new Reminder(3, "Test3", "Third Test Entry", Calendar.getInstance(), false));
         listRefresh();
 
         //Setup RecyclerView
