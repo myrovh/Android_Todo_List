@@ -40,10 +40,11 @@ public class MainActivity extends AppCompatActivity {
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);
         RecyclerView.LayoutManager todoLayout = new LinearLayoutManager(this);
-        todoRecyclerView.setLayoutManager(todoLayout);
-        todoRecyclerView.hasFixedSize();
-        //RecyclerView.Adapter adapter = new TodoAdapter(todoData);
-        todoRecyclerView.setAdapter(globalAdapter);
+        if (todoRecyclerView != null) {
+            todoRecyclerView.setLayoutManager(todoLayout);
+            todoRecyclerView.hasFixedSize();
+            todoRecyclerView.setAdapter(globalAdapter);
+        }
 
         //Set Recycler View Listener (open edit EditTodoActivity activity on item click)
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
@@ -75,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Calls the edit todo activity but with a '-1' value. edit todo should populate default values in this case
-    public void LaunchAddTodo() {
+    private void LaunchAddTodo() {
         Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
         i.putExtra("position", -1);
         startActivityForResult(i, REQUEST_NEW);
     }
 
-    public void LaunchEditTodo(int position) {
+    private void LaunchEditTodo(int position) {
         Reminder editTodo = todoData.get(position);
         Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
         i.putExtra("todo", Parcels.wrap(editTodo));
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Will sort the array list and then get the recyclerList to refresh its whole database
     //Might be overly expensive to refresh the whole dataset but I don't know how else to account for the many possible changes that a sort could cause
-    public void listRefresh() {
+    private void listRefresh() {
         Collections.sort(todoData, new Comparator<Reminder>() {
             public int compare(Reminder r1, Reminder r2) {
                 return r1.getDueDate().compareTo(r2.getDueDate());

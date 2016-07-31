@@ -11,10 +11,10 @@ public class Reminder {
     Calendar dueDate;
     boolean isComplete;
 
-    public Reminder() {
+    Reminder() {
     }
 
-    public Reminder(String title, String description, Calendar dueDate, boolean isComplete) {
+    Reminder(String title, String description, Calendar dueDate, boolean isComplete) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -29,27 +29,27 @@ public class Reminder {
         this.title = title;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 
-    public Calendar getDueDate() {
+    Calendar getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Calendar dueDate) {
+    void setDueDate(Calendar dueDate) {
         this.dueDate = dueDate;
     }
 
-    public boolean isComplete() {
+    boolean isComplete() {
         return isComplete;
     }
 
-    public void setComplete(boolean complete) {
+    void setComplete(boolean complete) {
         isComplete = complete;
     }
 }
