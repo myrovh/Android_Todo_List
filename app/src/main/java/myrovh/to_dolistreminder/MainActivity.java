@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.view_reminder_locations:
+                Intent i = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(i);
+                return true;
             case R.id.action_add_todo:
                 //Call item creation intent here
                 LaunchAddTodo();

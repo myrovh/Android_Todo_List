@@ -4,4 +4,5 @@
     <string name="completed">Completed</string>
     <string name="action_apply_reminder">Save</string>
     <string name="action_delete_reminder">Delete</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
