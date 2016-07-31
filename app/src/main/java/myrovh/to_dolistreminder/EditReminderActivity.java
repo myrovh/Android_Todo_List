@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +22,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class EditTodoActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class EditReminderActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+    public static final String RETURN_INTENT = "returnIntent";
     private Reminder editTodo;
     private int todoPosition;
+    private int activityIntent;
     private TextInputLayout titleText;
     private TextInputLayout descriptionText;
     private Switch doneSwitch;
@@ -45,8 +49,9 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
 
         //Get intent data
         todoPosition = getIntent().getIntExtra("position", -1);
+        activityIntent = getIntent().getIntExtra(MainActivity.REQUEST_INTENT, -1);
         //Set existing values if an existing todo has been parceled
-        if (todoPosition != -1) {
+        if (activityIntent == MainActivity.REQUEST_EDIT) {
             editTodo = Parcels.unwrap(getIntent().getParcelableExtra("todo"));
             UpdateView();
         } else {
@@ -63,12 +68,28 @@ public class EditTodoActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent returnData = new Intent();
         switch (item.getItemId()) {
-            case R.id.action_apply_todo:
-                Intent returnData = new Intent();
+            case android.R.id.home:
+                NavUtils.navigateUpTo(this, getIntent());
+                return true;
+            case R.id.action_delete_reminder:
+                Log.d("REMINDER", "delete reminder button pressed");
+                if (activityIntent == MainActivity.REQUEST_EDIT) {
+                    returnData.putExtra("todo", Parcels.wrap(editTodo));
+                    returnData.putExtra("position", todoPosition);
+                    returnData.putExtra(RETURN_INTENT, MainActivity.REQUEST_DELETE);
+                    setResult(1, returnData);
+                } else {
+                    setResult(0);
+                }
+                this.finish();
+                return true;
+            case R.id.action_apply_reminder:
                 if (UpdateData()) {
                     returnData.putExtra("todo", Parcels.wrap(editTodo));
                     returnData.putExtra("position", todoPosition);
+                    returnData.putExtra(RETURN_INTENT, MainActivity.REQUEST_NEW);
                     setResult(1, returnData);
                     this.finish();
                 }

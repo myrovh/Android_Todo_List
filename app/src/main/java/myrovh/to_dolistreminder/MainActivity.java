@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity {
+    final static String REQUEST_INTENT = "intent";
     final static int REQUEST_NEW = 20;
     final static int REQUEST_EDIT = 30;
+    final static int REQUEST_DELETE = 40;
+    final static int REQUEST_UPDATE = 50;
     final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
     private TodoAdapter globalAdapter = new TodoAdapter(todoData);
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             todoRecyclerView.setAdapter(globalAdapter);
         }
 
-        //Set Recycler View Listener (open edit EditTodoActivity activity on item click)
+        //Set Recycler View Listener (open edit EditReminderActivity activity on item click)
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -99,22 +103,36 @@ public class MainActivity extends AppCompatActivity {
 
     //Calls the edit todo activity but with a '-1' value. edit todo should populate default values in this case
     private void LaunchAddTodo() {
-        Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
+        Intent i = new Intent(MainActivity.this, EditReminderActivity.class);
         i.putExtra("position", -1);
+        i.putExtra(REQUEST_INTENT, REQUEST_NEW);
         startActivityForResult(i, REQUEST_NEW);
     }
 
     private void LaunchEditTodo(int position) {
         Reminder editTodo = todoData.get(position);
-        Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
+        Intent i = new Intent(MainActivity.this, EditReminderActivity.class);
         i.putExtra("todo", Parcels.wrap(editTodo));
         i.putExtra("position", position);
+        i.putExtra(REQUEST_INTENT, REQUEST_EDIT);
         startActivityForResult(i, REQUEST_EDIT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent returnData) {
-        if (resultCode == 1 && requestCode == REQUEST_EDIT) {
+        //ReminderActivity is sending back a return intent value we can use to determine if an edit intent actually requires a delete order
+        //TODO switch to using resultCode?
+        int returnValue = -1;
+        if (resultCode == 1) {
+            returnValue = returnData.getIntExtra(EditReminderActivity.RETURN_INTENT, -1);
+        }
+
+        if (resultCode == 1 && returnValue == REQUEST_DELETE) {
+            Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
+            Log.d("MAIN", "Reminder delete called on reminder id " + resultTodo.getId());
+            database.deleteReminder(resultTodo);
+            listRefresh();
+        } else if (resultCode == 1 && requestCode == REQUEST_EDIT) {
             Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
             int insertPosition = returnData.getIntExtra("position", -1);
             if (insertPosition != -1) {

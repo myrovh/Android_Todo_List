@@ -3,8 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_apply_todo"
-        android:icon="@drawable/ic_check_black_24dp"
-        android:title="@string/action_apply_todo"
-        app:showAsAction="always" />
+        android:id="@+id/action_delete_reminder"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/action_delete_reminder"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_apply_reminder"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="@string/action_apply_reminder"
+        app:showAsAction="ifRoom" />
 </menu>
