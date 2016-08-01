@@ -78,11 +78,20 @@ public class Reminder {
     }
 
     LatLng getLocation() {
-        return new LatLng(latitude, longitude);
+        if (latitude != null) {
+            return new LatLng(latitude, longitude);
+        } else {
+            return null;
+        }
     }
 
     void setLocation(LatLng location) {
-        this.latitude = location.latitude;
-        this.longitude = location.longitude;
+        if (location != null) {
+            this.latitude = location.latitude;
+            this.longitude = location.longitude;
+        } else {
+            this.latitude = null;
+            this.longitude = null;
+        }
     }
 }

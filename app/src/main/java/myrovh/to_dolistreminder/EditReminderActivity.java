@@ -16,6 +16,8 @@ import android.widget.DatePicker;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.parceler.Parcels;
 
 import java.util.Calendar;
@@ -31,6 +33,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     private TextInputLayout descriptionText;
     private Switch doneSwitch;
     private TextView dueDateView;
+    private TextView locationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         descriptionText = (TextInputLayout) findViewById(R.id.descriptionView);
         doneSwitch = (Switch) findViewById(R.id.doneSwitch);
         dueDateView = (TextView) findViewById(R.id.dateView);
+        locationView = (TextView) findViewById(R.id.locationView);
 
         //Get intent data
         todoPosition = getIntent().getIntExtra("position", -1);
@@ -101,8 +105,14 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         }
     }
 
-    public void SetDueDate(View v) {
+    public void setDueDate(View v) {
         showDatePickerDialog(v);
+    }
+
+    public void setLocation(View v) {
+        //start intent that passes a latlong if already set
+        //on a valid return update the latlong variable with returned bundled value and call the update location text function
+
     }
 
     //Takes the values stored inside the views and stores them inside the Reminder variable
@@ -116,7 +126,8 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         }
         editTodo.setDescription(descriptionText.getEditText().getText().toString());
         editTodo.setComplete(doneSwitch.isChecked());
-        //Date is not updated here but in the SetDueDate function
+        //Date is not updated here but in the setDueDate function
+        //Location is not updated here but in the setLocation function
         return true;
     }
 
@@ -130,6 +141,11 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         GregorianCalendar cal = (GregorianCalendar) editTodo.getDueDate();
         String calString = cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         dueDateView.setText(calString);
+        if (editTodo.getLocation() != null) {
+            locationView.setText(editTodo.getLocation().toString());
+        } else {
+            locationView.setText("No Location Set");
+        }
     }
 
     //Create a date picker dialog
@@ -145,6 +161,11 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         newDate.set(year, month, day);
         editTodo.setDueDate(newDate);
         UpdateView(); //TODO data sitting in text views that has not been applied is being destroyed here
+    }
+
+    public void onLocationSet(LatLng location) {
+        editTodo.setLocation(location);
+        UpdateView();
     }
 }
 

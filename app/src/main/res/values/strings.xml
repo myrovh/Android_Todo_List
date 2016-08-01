@@ -5,4 +5,8 @@
     <string name="action_apply_reminder">Save</string>
     <string name="action_delete_reminder">Delete</string>
     <string name="title_activity_maps">Map</string>
+    <string name="set_due_date">Set Due Date</string>
+    <string name="set_location">Set Location</string>
+    <string name="descriptionHint">Description</string>
+    <string name="titleHint">Title</string>
 </resources>

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     final static int REQUEST_NEW = 20;
     final static int REQUEST_EDIT = 30;
     final static int REQUEST_DELETE = 40;
+    final static int REQUEST_LOCATION = 50;
     private final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
     private TodoAdapter globalAdapter = new TodoAdapter(todoData);
