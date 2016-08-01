@@ -23,7 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class EditReminderActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
-    public static final String RETURN_INTENT = "returnIntent";
+    static final String RETURN_INTENT = "returnIntent";
     private Reminder editTodo;
     private int todoPosition;
     private int activityIntent;

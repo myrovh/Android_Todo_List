@@ -25,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
     final static int REQUEST_NEW = 20;
     final static int REQUEST_EDIT = 30;
     final static int REQUEST_DELETE = 40;
-    final static int REQUEST_UPDATE = 50;
-    final static String SETTING_FIRSTSTART = "firstStart";
+    private final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
     private TodoAdapter globalAdapter = new TodoAdapter(todoData);
     private ReminderDatabase database;
@@ -48,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 boolean isFirstStart = getPrefs.getBoolean(SETTING_FIRSTSTART, true);
                 if (isFirstStart) {
-                    database.addReminder(new Reminder(1, "Test", "First Test Entry", Calendar.getInstance(), false));
-                    database.addReminder(new Reminder(2, "Test2", "Second Test Entry", Calendar.getInstance(), false));
+                    database.addReminder(new Reminder(1, "Test", "First Test Entry", Calendar.getInstance(), false, null, null));
+                    database.addReminder(new Reminder(2, "Test2", "Second Test Entry", Calendar.getInstance(), false, null, null));
 
                     SharedPreferences.Editor e = getPrefs.edit();
                     e.putBoolean(SETTING_FIRSTSTART, false);
