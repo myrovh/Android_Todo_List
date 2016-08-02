@@ -26,6 +26,9 @@ import java.util.Locale;
 
 public class EditReminderActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     static final String RETURN_INTENT = "returnIntent";
+    static final String BUNDLE_LOCATIONSET = "location";
+    static final String BUNDLE_LATITUDE = "latitude";
+    static final String BUNDLE_LONGITUDE = "longitude";
     private Reminder editTodo;
     private int todoPosition;
     private int activityIntent;
@@ -112,7 +115,23 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     public void setLocation(View v) {
         //start intent that passes a latlong if already set
         //on a valid return update the latlong variable with returned bundled value and call the update location text function
+        Intent i = new Intent(EditReminderActivity.this, SelectLocationActivity.class);
+        if (editTodo.getLocation() == null) {
+            i.putExtra(BUNDLE_LOCATIONSET, false);
+        } else {
+            i.putExtra(BUNDLE_LOCATIONSET, true);
+            i.putExtra(BUNDLE_LATITUDE, editTodo.getLocation().latitude);
+            i.putExtra(BUNDLE_LONGITUDE, editTodo.getLocation().longitude);
+        }
+        startActivityForResult(i, MainActivity.REQUEST_LOCATION);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent returnData) {
+        if (resultCode == 1 && requestCode == MainActivity.REQUEST_LOCATION) {
+            LatLng newValue = new LatLng(returnData.getDoubleExtra(BUNDLE_LATITUDE, 0), returnData.getDoubleExtra(BUNDLE_LONGITUDE, 0));
+            onLocationSet(newValue);
+        }
     }
 
     //Takes the values stored inside the views and stores them inside the Reminder variable
