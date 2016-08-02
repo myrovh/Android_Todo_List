@@ -16,6 +16,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     private GoogleMap mMap;
     private TextView tapTextView;
+    private boolean wasLocationSet;
     private LatLng setLocation;
 
     @Override
@@ -28,6 +29,10 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         mapFragment.getMapAsync(this);
 
         //Unpack
+        wasLocationSet = getIntent().getBooleanExtra(EditReminderActivity.BUNDLE_LOCATIONSET, false);
+        if (wasLocationSet) {
+            setLocation = new LatLng(getIntent().getDoubleExtra(EditReminderActivity.BUNDLE_LATITUDE, 0), getIntent().getDoubleExtra(EditReminderActivity.BUNDLE_LONGITUDE, 0));
+        }
 
         //Get Views
         tapTextView = (TextView) findViewById(R.id.tap_text);
@@ -37,10 +42,17 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in default location and move the camera
+        // Move the camera to default location
         LatLng defaultLocation = new LatLng(-37, 144); //Melbourne
-        mMap.addMarker(new MarkerOptions().position(defaultLocation).title("Default starting camera position"));
+        //mMap.addMarker(new MarkerOptions().position(defaultLocation).title("Default starting camera position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
+
+        //Add marker for old location if it was set
+        if (wasLocationSet) {
+            mMap.addMarker(new MarkerOptions().position(setLocation).title("Current Reminder Location"));
+        }
+
+        // Set Listeners
         mMap.setOnMapLongClickListener(this);
     }
 
