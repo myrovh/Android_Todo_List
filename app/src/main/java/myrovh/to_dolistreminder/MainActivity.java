@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     final static int REQUEST_LOCATION = 50;
     final static int REQUEST_SELECT = 60;
     final static String BUNDLE_REMINDERS = "reminderList";
+    final static String BUNDLE_ID = "reminderId";
     private final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
     private TodoAdapter globalAdapter = new TodoAdapter(todoData);
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.view_reminder_locations:
                 Intent i = new Intent(MainActivity.this, MapsActivity.class);
                 i.putExtra(BUNDLE_REMINDERS, Parcels.wrap(todoData));
-                startActivity(i);
+                startActivityForResult(i, REQUEST_SELECT);
                 return true;
             case R.id.action_add_todo:
                 //Call item creation intent here
@@ -139,6 +140,18 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MAIN", "Reminder delete called on reminder id " + resultTodo.getId());
             database.deleteReminder(resultTodo);
             listRefresh();
+        } else if (resultCode == 1 && requestCode == REQUEST_SELECT) {
+            int selectedId = returnData.getIntExtra(BUNDLE_ID, -1);
+            for (Reminder i : todoData) {
+                if (i.getId() == selectedId) {
+
+                    Intent intent = new Intent(MainActivity.this, EditReminderActivity.class);
+                    intent.putExtra("todo", Parcels.wrap(i));
+                    intent.putExtra("position", 0); //todo position shouldn't be needed anymore
+                    intent.putExtra(REQUEST_INTENT, REQUEST_EDIT);
+                    startActivityForResult(intent, REQUEST_EDIT);
+                }
+            }
         } else if (resultCode == 1 && requestCode == REQUEST_EDIT) {
             Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
             int insertPosition = returnData.getIntExtra("position", -1);
