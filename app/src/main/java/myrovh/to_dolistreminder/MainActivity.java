@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     final static int REQUEST_EDIT = 30;
     final static int REQUEST_DELETE = 40;
     final static int REQUEST_LOCATION = 50;
+    final static int REQUEST_SELECT = 60;
+    final static String BUNDLE_REMINDERS = "reminderList";
     private final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
     private TodoAdapter globalAdapter = new TodoAdapter(todoData);
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.view_reminder_locations:
                 Intent i = new Intent(MainActivity.this, MapsActivity.class);
+                i.putExtra(BUNDLE_REMINDERS, Parcels.wrap(todoData));
                 startActivity(i);
                 return true;
             case R.id.action_add_todo:
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent returnData) {
         //ReminderActivity is sending back a return intent value we can use to determine if an edit intent actually requires a delete order
-        //TODO switch to using resultCode?
+        //TODO switch to using getAction to resolve returned intent
         int returnValue = -1;
         if (resultCode == 1) {
             returnValue = returnData.getIntExtra(EditReminderActivity.RETURN_INTENT, -1);
