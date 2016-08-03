@@ -16,7 +16,12 @@ import android.widget.DatePicker;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.parceler.Parcels;
 
@@ -24,7 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class EditReminderActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class EditReminderActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, OnMapReadyCallback {
     static final String RETURN_INTENT = "returnIntent";
     static final String BUNDLE_LOCATIONSET = "location";
     static final String BUNDLE_LATITUDE = "latitude";
@@ -37,11 +42,17 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     private Switch doneSwitch;
     private TextView dueDateView;
     private TextView locationView;
+    private SupportMapFragment mapFragment;
+    private GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragment);
+        mapFragment.getMapAsync(this);
 
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
@@ -165,6 +176,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         } else {
             locationView.setText("No Location Set");
         }
+        mapFragment.getMapAsync(this);
     }
 
     //Create a date picker dialog
@@ -185,6 +197,14 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     public void onLocationSet(LatLng location) {
         editTodo.setLocation(location);
         UpdateView();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        if (editTodo.getLocation() != null) {
+            googleMap.addMarker(new MarkerOptions().position(editTodo.getLocation()));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(editTodo.getLocation(), 15));
+        }
     }
 }
 
