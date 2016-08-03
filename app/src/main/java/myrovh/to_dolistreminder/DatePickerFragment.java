@@ -10,6 +10,7 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 
+@SuppressWarnings("WeakerAccess")
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private DatePickerDialog.OnDateSetListener listener;
 

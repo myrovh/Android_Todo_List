@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".EditTodoActivity">
+    tools:context=".EditReminderActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_toolbar"
@@ -34,7 +34,7 @@
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Title"
+                android:hint="@string/titleHint"
                 android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
@@ -47,7 +47,7 @@
                 android:id="@+id/descriptionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Description"
+                android:hint="@string/descriptionHint"
                 android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +61,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
@@ -69,8 +69,8 @@
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="SetDueDate"
-                android:text="Set Due Date" />
+                android:onClick="setDueDate"
+                android:text="@string/set_due_date" />
 
             <TextView
                 android:id="@+id/dateView"
@@ -79,5 +79,26 @@
                 android:text="date" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/setLocationButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setLocation"
+                android:text="@string/set_location" />
+
+            <TextView
+                android:id="@+id/locationView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="location" />
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
