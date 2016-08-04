@@ -9,4 +9,6 @@
     <string name="set_location">Set Location</string>
     <string name="descriptionHint">Description</string>
     <string name="titleHint">Title</string>
+    <string name="about">About</string>
+    <string name="map">Map</string>
 </resources>

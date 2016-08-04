@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
+
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -102,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
                 //Call item creation intent here
                 LaunchAddTodo();
                 return true;
+            case R.id.action_view_about:
+                new LibsBuilder()
+                        //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
+                        .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                        //start the activity
+                        .start(this);
             default:
                 // The user's action was not recognized.
                 // Invoke the superclass to handle it.
