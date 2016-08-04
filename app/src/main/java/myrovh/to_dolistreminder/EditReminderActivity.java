@@ -1,9 +1,15 @@
 package myrovh.to_dolistreminder;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +21,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +41,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     static final String BUNDLE_LOCATIONSET = "location";
     static final String BUNDLE_LATITUDE = "latitude";
     static final String BUNDLE_LONGITUDE = "longitude";
+    static final int PERMISSIONS_REQUEST_LOCATION = 20;
     private Reminder editTodo;
     private int todoPosition;
     private int activityIntent;
@@ -53,6 +61,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
+
 
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
@@ -75,6 +84,36 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         } else {
             editTodo = new Reminder();
             editTodo.setDueDate(Calendar.getInstance());
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Toast.makeText(this, "Need location to set default reminder location", Toast.LENGTH_SHORT).show();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+                }
+            } else {
+                setDefaultLocation();
+            }
+        }
+    }
+
+    private void setDefaultLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            String locationProvider = LocationManager.NETWORK_PROVIDER;
+            Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+            editTodo.setLocation(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setDefaultLocation();
+                }
+            }
         }
     }
 
