@@ -66,6 +66,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(appToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Setup Views
         titleText = (TextInputLayout) findViewById(R.id.titleView);

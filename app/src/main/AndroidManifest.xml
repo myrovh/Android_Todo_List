@@ -17,7 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditReminderActivity" />
+        <activity android:name=".EditReminderActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity android:name=".SelectLocationActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
