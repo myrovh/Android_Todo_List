@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.materialize.MaterializeBuilder;
 
 import org.parceler.Parcels;
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new MaterializeBuilder().withActivity(this).build();
 
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
