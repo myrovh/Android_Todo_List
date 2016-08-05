@@ -99,6 +99,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     }
 
     private void setDefaultLocation() {
+        //TODO application crashes if there is no last known location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             String locationProvider = LocationManager.NETWORK_PROVIDER;
