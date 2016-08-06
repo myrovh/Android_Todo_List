@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager todoLayout = new LinearLayoutManager(this);
         if (todoRecyclerView != null) {
             todoRecyclerView.setLayoutManager(todoLayout);
+            todoRecyclerView.addItemDecoration(
+                    new DividerItemDecoration(getBaseContext().getDrawable(R.drawable.line_divider),
+                            false, false));
             todoRecyclerView.hasFixedSize();
             todoRecyclerView.setAdapter(globalAdapter);
         }

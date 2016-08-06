@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'Google Inc.:Google APIs:23'
+    compileSdkVersion 'Google Apis:Google Apis:23'
     buildToolsVersion "24.0.1"
 
     defaultConfig {
         applicationId "myrovh.to_dolistreminder"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
