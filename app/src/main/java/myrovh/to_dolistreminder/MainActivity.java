@@ -283,8 +283,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case "Week":
+                String weekNameList[] = {"This Week", "Next Week", "The Week After"};
+                int futureWeeks = 0;
+                while (futureWeeks < weekNameList.length) {
+                    DateTime currentCount = currentDate.plusWeeks(futureWeeks);
+                    todoData.add(weekNameList[futureWeeks]);
+                    for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                        Reminder i = iterator.next();
+                        if (i.dueDate.getWeekOfWeekyear() == currentCount.getWeekOfWeekyear()) {
+                            todoData.add(i);
+                            iterator.remove();
+                        }
+                    }
+                    futureWeeks++;
+                }
                 break;
             case "Month":
+                String monthNameList[] = {"This Month", "Next Month"};
+                int futureMonths = 0;
+                while (futureMonths < monthNameList.length) {
+                    DateTime currentCount = currentDate.plusMonths(futureMonths);
+                    todoData.add(monthNameList[futureMonths]);
+                    for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                        Reminder i = iterator.next();
+                        if (i.dueDate.getMonthOfYear() == currentCount.getMonthOfYear()) {
+                            todoData.add(i);
+                            iterator.remove();
+                        }
+                    }
+                    futureMonths++;
+                }
                 break;
         }
 
