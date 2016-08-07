@@ -53,9 +53,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tapTextView.setText("Tap a markers title to open the edit screen");
 
         //Add markers for reminder locations markers are stored in a map so we can attach the reminder id to remember which reminder a marker belongs to
-        for (Reminder i : todoData) {
-            if (i.getLocation() != null) {
-                markerList.put(mMap.addMarker(new MarkerOptions().position(i.getLocation()).title(i.getTitle())), i.getId());
+        for (Object obj : todoData) {
+            if (obj instanceof Reminder) {
+                Reminder i = (Reminder) obj;
+                if (i.latitude != null) {
+                    markerList.put(mMap.addMarker(new MarkerOptions().position(i.getLocation()).title(i.getTitle())), i.getId());
+                }
             }
         }
 

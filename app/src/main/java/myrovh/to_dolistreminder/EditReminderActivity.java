@@ -73,7 +73,6 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         descriptionText = (TextInputLayout) findViewById(R.id.descriptionView);
         doneSwitch = (Switch) findViewById(R.id.doneSwitch);
         dueDateView = (TextView) findViewById(R.id.dateView);
-        locationView = (TextView) findViewById(R.id.locationView);
 
         //Get intent data
         todoPosition = getIntent().getIntExtra("position", -1);
@@ -85,18 +84,9 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         } else {
             editTodo = new Reminder();
             editTodo.setDueDate(Calendar.getInstance());
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    Toast.makeText(this, "Need location to set default reminder location", Toast.LENGTH_SHORT).show();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
-                }
-            } else {
-                setDefaultLocation();
-            }
         }
     }
+
 
     private void setDefaultLocation() {
         //TODO application crashes if there is no last known location
@@ -104,7 +94,9 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             String locationProvider = LocationManager.NETWORK_PROVIDER;
             Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-            editTodo.setLocation(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+            if (lastKnownLocation != null) {
+                editTodo.setLocation(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+            }
         }
     }
 
@@ -164,6 +156,20 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         showDatePickerDialog(v);
     }
 
+
+    public void setAutomaticLocation(View v) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Toast.makeText(this, "Need location to set default reminder location", Toast.LENGTH_SHORT).show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+            }
+        } else {
+            setDefaultLocation();
+        }
+        mapRefresh();
+    }
+
     public void setLocation(View v) {
         //start intent that passes a latlong if already set
         //on a valid return update the latlong variable with returned bundled value and call the update location text function
@@ -176,6 +182,11 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
             i.putExtra(BUNDLE_LONGITUDE, editTodo.getLocation().longitude);
         }
         startActivityForResult(i, MainActivity.REQUEST_LOCATION);
+    }
+
+    public void clearLocation(View v) {
+        editTodo.setLocation(null);
+        mapRefresh();
     }
 
     @Override
@@ -212,11 +223,6 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         GregorianCalendar cal = (GregorianCalendar) editTodo.getDueDate();
         String calString = cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         dueDateView.setText(calString);
-        if (editTodo.getLocation() != null) {
-            locationView.setText(editTodo.getLocation().toString());
-        } else {
-            locationView.setText("No Location Set");
-        }
         mapFragment.getMapAsync(this);
     }
 
@@ -229,6 +235,7 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     //Apply returned date picker value when it reports onDateSet via listener
     @Override
     public void onDateSet(DatePicker v, int year, int month, int day) {
+        UpdateData();
         Calendar newDate = Calendar.getInstance();
         newDate.set(year, month, day);
         editTodo.setDueDate(newDate);
@@ -236,15 +243,28 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     }
 
     public void onLocationSet(LatLng location) {
+        UpdateData();
         editTodo.setLocation(location);
         UpdateView();
+        mapRefresh();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (editTodo.getLocation() != null) {
-            googleMap.addMarker(new MarkerOptions().position(editTodo.getLocation()));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(editTodo.getLocation(), 15));
+        map = googleMap;
+        mapRefresh();
+    }
+
+    //Clear the map and then apply new marker for set location will still clear old markers if there are no new locations to update from
+    public void mapRefresh() {
+        if (map != null) {
+            map.clear();
+            if (editTodo.getLocation() != null) {
+                map.addMarker(new MarkerOptions().position(editTodo.getLocation()));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(editTodo.getLocation(), 15));
+            }
+        } else {
+            Log.d("MAP", "refresh called before map exists");
         }
     }
 }
