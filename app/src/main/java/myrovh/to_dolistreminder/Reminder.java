@@ -2,6 +2,7 @@ package myrovh.to_dolistreminder;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.joda.time.DateTime;
 import org.parceler.Parcel;
 
 import java.util.Calendar;
@@ -11,7 +12,7 @@ public class Reminder {
     int id;
     String title;
     String description;
-    Calendar dueDate;
+    DateTime dueDate;
     boolean isComplete;
     Double latitude;
     Double longitude;
@@ -24,7 +25,7 @@ public class Reminder {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
+        this.dueDate = new DateTime(dueDate);
         this.isComplete = isComplete;
         //Ensure null input always apply to both lat and long
         if(latitude == null || longitude == null) {
@@ -58,15 +59,19 @@ public class Reminder {
     }
 
     Calendar getDueDate() {
-        return dueDate;
+        return dueDate.toGregorianCalendar();
     }
 
     void setDueDate(Calendar dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = new DateTime(dueDate);
+    }
+
+    DateTime getJodaTime() {
+        return dueDate;
     }
 
     Long getDueDateAsEpoc() {
-        return dueDate.getTimeInMillis();
+        return dueDate.getMillis();
     }
 
     boolean isComplete() {

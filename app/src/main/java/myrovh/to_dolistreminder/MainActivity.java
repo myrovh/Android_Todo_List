@@ -1,5 +1,6 @@
 package myrovh.to_dolistreminder;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,6 +25,11 @@ import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 import com.mikepenz.materialize.MaterializeBuilder;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -31,6 +37,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Locale;
 
 import myrovh.to_dolistreminder.ListModels.HeaderItem;
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new MaterializeBuilder().withActivity(this).build();
+        JodaTimeAndroid.init(this);
 
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
@@ -216,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void listRefresh() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String sortMode = preferences.getString(PREFERENCES_SORT, "Day");
+        DateTime currentDate = DateTime.now();
         Log.d("SORT", "Sort mode current defined as " + sortMode);
 
         globalAdapter.clear();
@@ -227,11 +236,63 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return r1.getDueDate().compareTo(r2.getDueDate());
             }
         });
+
+        //Add all overdue reminders to their own header before regular sorting takes place
+        int overDueCount = 0;
+        for (Reminder i : tempData) {
+            if (i.dueDate.isBeforeNow()) {
+                overDueCount++;
+            }
+        }
+        if (overDueCount > 0) {
+            todoData.add("Overdue");
+            for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                Reminder i = iterator.next();
+                if (i.dueDate.getDayOfYear() < currentDate.getDayOfYear()) {
+                    todoData.add(i);
+                    iterator.remove();
+                }
+            }
+        }
+
+        //Depending on which sort mode has been selected determines what groups are created
+        switch (sortMode) {
+            case "Day":
+                todoData.add("Today");
+                for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                    Reminder i = iterator.next();
+                    if (i.dueDate.getDayOfYear() == currentDate.getDayOfYear()) {
+                        todoData.add(i);
+                        iterator.remove();
+                    }
+                }
+
+                int futureCounter = 1;
+                while (futureCounter < 7) {
+                    DateTime currentCount = currentDate.plusDays(futureCounter);
+                    DateTimeFormatter fmt = DateTimeFormat.forPattern("EEEE");
+                    todoData.add(currentCount.toString(fmt));
+                    for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                        Reminder i = iterator.next();
+                        if (i.dueDate.getDayOfYear() == currentCount.getDayOfYear()) {
+                            todoData.add(i);
+                            iterator.remove();
+                        }
+                    }
+                    futureCounter++;
+                }
+                break;
+            case "Week":
+                break;
+            case "Month":
+                break;
+        }
+
+        //Any dates beyond scope of sorting method go here
+        todoData.add("Other");
         for (Reminder i : tempData) {
             todoData.add(i);
         }
-        todoData.add(0, "Title Test");
-        todoData.add(5, "Title Test 2");
 
         for (Object i : todoData) {
             if (i instanceof Reminder) {
@@ -248,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //When a sort option is selected
+    @SuppressLint("CommitPrefEdits")
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String sortOption = (String) adapterView.getItemAtPosition(i);
