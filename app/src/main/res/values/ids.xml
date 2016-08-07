@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="fastadapter_reminderitem_id" type="id">1</item>
+    <item name="fastadapter_headeritem_id" type="id">2</item>
 </resources>

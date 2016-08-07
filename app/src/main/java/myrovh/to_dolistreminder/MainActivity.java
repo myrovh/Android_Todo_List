@@ -21,6 +21,7 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 import com.mikepenz.materialize.MaterializeBuilder;
 
 import org.parceler.Parcels;
@@ -31,6 +32,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import myrovh.to_dolistreminder.ListModels.HeaderItem;
+import myrovh.to_dolistreminder.ListModels.ReminderItem;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     final static String REQUEST_INTENT = "intent";
@@ -43,8 +47,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     final static String BUNDLE_REMINDERS = "reminderList";
     final static String BUNDLE_ID = "reminderId";
     private final static String SETTING_FIRSTSTART = "firstStart";
-    private ArrayList<Reminder> todoData = new ArrayList<>();
-    private FastItemAdapter globalAdapter = new FastItemAdapter();
+    private ArrayList<Object> todoData = new ArrayList<>();
+    private FastItemAdapter globalAdapter = new FastItemAdapter<>();
+    private HeaderAdapter<HeaderItem> headerAdapter = new HeaderAdapter<>();
     private ReminderDatabase database;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             todoRecyclerView.setLayoutManager(todoLayout);
             todoRecyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext().getDrawable(R.drawable.line_divider), false, false));
             todoRecyclerView.hasFixedSize();
-            todoRecyclerView.setAdapter(globalAdapter);
+            todoRecyclerView.setAdapter(headerAdapter.wrap(globalAdapter));
         }
 
         //Setup Sort Mode Selection Spinner
@@ -157,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void LaunchEditTodo(int position) {
-        Reminder editTodo = todoData.get(position);
+        Reminder editTodo = (Reminder) todoData.get(position);
         Intent i = new Intent(MainActivity.this, EditReminderActivity.class);
         i.putExtra("todo", Parcels.wrap(editTodo));
         i.putExtra("position", position);
@@ -181,14 +186,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             listRefresh();
         } else if (resultCode == 1 && requestCode == REQUEST_SELECT) {
             int selectedId = returnData.getIntExtra(BUNDLE_ID, -1);
-            for (Reminder i : todoData) {
-                if (i.getId() == selectedId) {
-
-                    Intent intent = new Intent(MainActivity.this, EditReminderActivity.class);
-                    intent.putExtra("todo", Parcels.wrap(i));
-                    intent.putExtra("position", 0); //todo position shouldn't be needed anymore
-                    intent.putExtra(REQUEST_INTENT, REQUEST_EDIT);
-                    startActivityForResult(intent, REQUEST_EDIT);
+            for (Object i : todoData) {
+                if (i instanceof Reminder) {
+                    Reminder reminder = (Reminder) i;
+                    if (reminder.getId() == selectedId) {
+                        Intent intent = new Intent(MainActivity.this, EditReminderActivity.class);
+                        intent.putExtra("todo", Parcels.wrap(reminder));
+                        intent.putExtra("position", 0); //todo position shouldn't be needed anymore
+                        intent.putExtra(REQUEST_INTENT, REQUEST_EDIT);
+                        startActivityForResult(intent, REQUEST_EDIT);
+                    }
                 }
             }
         } else if (resultCode == 1 && requestCode == REQUEST_EDIT) {
@@ -210,18 +217,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String sortMode = preferences.getString(PREFERENCES_SORT, "Day");
         Log.d("SORT", "Sort mode current defined as " + sortMode);
+
         globalAdapter.clear();
         todoData.clear();
-        todoData.addAll(database.getAllReminders());
-        Collections.sort(todoData, new Comparator<Reminder>() {
+        ArrayList<Reminder> tempData = new ArrayList<>();
+        tempData.addAll(database.getAllReminders());
+        Collections.sort(tempData, new Comparator<Reminder>() {
             public int compare(Reminder r1, Reminder r2) {
                 return r1.getDueDate().compareTo(r2.getDueDate());
             }
         });
-        for (Reminder i : todoData) {
-            GregorianCalendar cal = (GregorianCalendar) i.getDueDate();
-            String calString = cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
-            globalAdapter.add(new ReminderItem(i.getTitle(), i.getDescription(), calString));
+        for (Reminder i : tempData) {
+            todoData.add(i);
+        }
+        todoData.add(0, "Title Test");
+        todoData.add(5, "Title Test 2");
+
+        for (Object i : todoData) {
+            if (i instanceof Reminder) {
+                Reminder temp = (Reminder) i;
+                GregorianCalendar cal = (GregorianCalendar) temp.getDueDate();
+                String calString = cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+                globalAdapter.add(new ReminderItem(temp.getTitle(), temp.getDescription(), calString));
+            } else if (i instanceof String) {
+                String temp = (String) i;
+                globalAdapter.add(new HeaderItem(temp));
+            }
         }
         globalAdapter.notifyDataSetChanged();
     }

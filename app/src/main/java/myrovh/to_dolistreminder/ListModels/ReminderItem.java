@@ -1,10 +1,12 @@
-package myrovh.to_dolistreminder;
+package myrovh.to_dolistreminder.ListModels;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
+
+import myrovh.to_dolistreminder.R;
 
 public class ReminderItem extends AbstractItem<ReminderItem, ReminderItem.ViewHolder> {
     public String title;
