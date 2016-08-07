@@ -18,6 +18,9 @@ import android.widget.Spinner;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.materialize.MaterializeBuilder;
 
 import org.parceler.Parcels;
@@ -26,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     final static String REQUEST_INTENT = "intent";
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     final static String BUNDLE_ID = "reminderId";
     private final static String SETTING_FIRSTSTART = "firstStart";
     private ArrayList<Reminder> todoData = new ArrayList<>();
-    private TodoAdapter globalAdapter = new TodoAdapter(todoData);
+    private FastItemAdapter globalAdapter = new FastItemAdapter();
     private ReminderDatabase database;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         RecyclerView.LayoutManager todoLayout = new LinearLayoutManager(this);
         if (todoRecyclerView != null) {
             todoRecyclerView.setLayoutManager(todoLayout);
-            todoRecyclerView.addItemDecoration(
-                    new DividerItemDecoration(getBaseContext().getDrawable(R.drawable.line_divider),
-                            false, false));
+            todoRecyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext().getDrawable(R.drawable.line_divider), false, false));
             todoRecyclerView.hasFixedSize();
             todoRecyclerView.setAdapter(globalAdapter);
         }
@@ -93,10 +96,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         optionSpinner.setOnItemSelectedListener(this);
 
         //Set Recycler View Listener (open edit EditReminderActivity activity on item click)
+        /*
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 LaunchEditTodo(position);
+            }
+        });
+        */
+
+        globalAdapter.withSelectable(true);
+        globalAdapter.withOnClickListener(new FastAdapter.OnClickListener<ReminderItem>() {
+            @Override
+            public boolean onClick(View v, IAdapter<ReminderItem> adapter, ReminderItem item, int position) {
+                LaunchEditTodo(position);
+                return true;
             }
         });
 
@@ -196,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String sortMode = preferences.getString(PREFERENCES_SORT, "Day");
         Log.d("SORT", "Sort mode current defined as " + sortMode);
+        globalAdapter.clear();
         todoData.clear();
         todoData.addAll(database.getAllReminders());
         Collections.sort(todoData, new Comparator<Reminder>() {
@@ -203,6 +218,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return r1.getDueDate().compareTo(r2.getDueDate());
             }
         });
+        for (Reminder i : todoData) {
+            GregorianCalendar cal = (GregorianCalendar) i.getDueDate();
+            String calString = cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+            globalAdapter.add(new ReminderItem(i.getTitle(), i.getDescription(), calString));
+        }
         globalAdapter.notifyDataSetChanged();
     }
 
