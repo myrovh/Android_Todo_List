@@ -39,6 +39,7 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Objects;
 
 import myrovh.to_dolistreminder.ListModels.HeaderItem;
 import myrovh.to_dolistreminder.ListModels.ReminderItem;
@@ -237,89 +238,108 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        //Add all overdue reminders to their own header before regular sorting takes place
-        int overDueCount = 0;
-        for (Reminder i : tempData) {
-            if (i.dueDate.isBeforeNow()) {
-                overDueCount++;
-            }
-        }
-        if (overDueCount > 0) {
-            todoData.add("Overdue");
+        if (!Objects.equals(sortMode, "Completed")) {
+            //Remove any completed tasks from the list
             for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
                 Reminder i = iterator.next();
-                if (i.dueDate.getDayOfYear() < currentDate.getDayOfYear()) {
-                    todoData.add(i);
+                if (i.isComplete()) {
                     iterator.remove();
                 }
             }
-        }
-
-        //Depending on which sort mode has been selected determines what groups are created
-        switch (sortMode) {
-            case "Day":
-                todoData.add("Today");
+            //Add all overdue reminders to their own header before regular sorting takes place
+            int overDueCount = 0;
+            for (Reminder i : tempData) {
+                if (i.dueDate.isBeforeNow()) {
+                    overDueCount++;
+                }
+            }
+            if (overDueCount > 0) {
+                todoData.add("Overdue");
                 for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
                     Reminder i = iterator.next();
-                    if (i.dueDate.getDayOfYear() == currentDate.getDayOfYear()) {
+                    if (i.dueDate.getDayOfYear() < currentDate.getDayOfYear()) {
                         todoData.add(i);
                         iterator.remove();
                     }
                 }
+            }
 
-                int futureCounter = 1;
-                while (futureCounter < 7) {
-                    DateTime currentCount = currentDate.plusDays(futureCounter);
-                    DateTimeFormatter fmt = DateTimeFormat.forPattern("EEEE");
-                    todoData.add(currentCount.toString(fmt));
+            //Depending on which sort mode has been selected determines what groups are created
+            switch (sortMode) {
+                case "Day":
+                    todoData.add("Today");
                     for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
                         Reminder i = iterator.next();
-                        if (i.dueDate.getDayOfYear() == currentCount.getDayOfYear()) {
+                        if (i.dueDate.getDayOfYear() == currentDate.getDayOfYear()) {
                             todoData.add(i);
                             iterator.remove();
                         }
                     }
-                    futureCounter++;
-                }
-                break;
-            case "Week":
-                String weekNameList[] = {"This Week", "Next Week", "The Week After"};
-                int futureWeeks = 0;
-                while (futureWeeks < weekNameList.length) {
-                    DateTime currentCount = currentDate.plusWeeks(futureWeeks);
-                    todoData.add(weekNameList[futureWeeks]);
-                    for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
-                        Reminder i = iterator.next();
-                        if (i.dueDate.getWeekOfWeekyear() == currentCount.getWeekOfWeekyear()) {
-                            todoData.add(i);
-                            iterator.remove();
-                        }
-                    }
-                    futureWeeks++;
-                }
-                break;
-            case "Month":
-                String monthNameList[] = {"This Month", "Next Month"};
-                int futureMonths = 0;
-                while (futureMonths < monthNameList.length) {
-                    DateTime currentCount = currentDate.plusMonths(futureMonths);
-                    todoData.add(monthNameList[futureMonths]);
-                    for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
-                        Reminder i = iterator.next();
-                        if (i.dueDate.getMonthOfYear() == currentCount.getMonthOfYear()) {
-                            todoData.add(i);
-                            iterator.remove();
-                        }
-                    }
-                    futureMonths++;
-                }
-                break;
-        }
 
-        //Any dates beyond scope of sorting method go here
-        todoData.add("Other");
-        for (Reminder i : tempData) {
-            todoData.add(i);
+                    int futureCounter = 1;
+                    while (futureCounter < 7) {
+                        DateTime currentCount = currentDate.plusDays(futureCounter);
+                        DateTimeFormatter fmt = DateTimeFormat.forPattern("EEEE");
+                        todoData.add(currentCount.toString(fmt));
+                        for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                            Reminder i = iterator.next();
+                            if (i.dueDate.getDayOfYear() == currentCount.getDayOfYear()) {
+                                todoData.add(i);
+                                iterator.remove();
+                            }
+                        }
+                        futureCounter++;
+                    }
+                    break;
+                case "Week":
+                    String weekNameList[] = {"This Week", "Next Week", "The Week After"};
+                    int futureWeeks = 0;
+                    while (futureWeeks < weekNameList.length) {
+                        DateTime currentCount = currentDate.plusWeeks(futureWeeks);
+                        todoData.add(weekNameList[futureWeeks]);
+                        for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                            Reminder i = iterator.next();
+                            if (i.dueDate.getWeekOfWeekyear() == currentCount.getWeekOfWeekyear()) {
+                                todoData.add(i);
+                                iterator.remove();
+                            }
+                        }
+                        futureWeeks++;
+                    }
+                    break;
+                case "Month":
+                    String monthNameList[] = {"This Month", "Next Month"};
+                    int futureMonths = 0;
+                    while (futureMonths < monthNameList.length) {
+                        DateTime currentCount = currentDate.plusMonths(futureMonths);
+                        todoData.add(monthNameList[futureMonths]);
+                        for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                            Reminder i = iterator.next();
+                            if (i.dueDate.getMonthOfYear() == currentCount.getMonthOfYear()) {
+                                todoData.add(i);
+                                iterator.remove();
+                            }
+                        }
+                        futureMonths++;
+                    }
+                    break;
+            }
+
+            //Any dates beyond scope of sorting method go here
+            todoData.add("Other");
+            for (Reminder i : tempData) {
+                todoData.add(i);
+            }
+        } else {
+            todoData.add("Completed");
+            for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
+                Reminder i = iterator.next();
+                if (!i.isComplete()) {
+                    iterator.remove();
+                } else {
+                    todoData.add(i);
+                }
+            }
         }
 
         for (Object i : todoData) {
