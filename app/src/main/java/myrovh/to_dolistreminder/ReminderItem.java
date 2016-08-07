@@ -51,6 +51,16 @@ public class ReminderItem extends AbstractItem<ReminderItem, ReminderItem.ViewHo
             this.titleView = (TextView) view.findViewById(R.id.titleView);
             this.descriptionView = (TextView) view.findViewById(R.id.descriptionView);
             this.dueDateView = (TextView) view.findViewById(R.id.dateView);
+
+            /*
+             * Uncomment this block to enforce single line text for reminders in the list.
+             *
+            titleView.setSingleLine();
+            titleView.setEllipsize(TextUtils.TruncateAt.END);
+            descriptionView.setSingleLine();
+            descriptionView.setEllipsize(TextUtils.TruncateAt.END);
+            dueDateView.setSingleLine();
+            */
         }
     }
 }
