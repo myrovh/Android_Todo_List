@@ -12,42 +12,41 @@
         android:id="@+id/dateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginStart="32dp"
-        android:paddingEnd="25dp"
-        android:paddingStart="25dp"
+        android:layout_marginEnd="8dp"
         android:text="Medium Text"
+        android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="@+id/titleView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toRightOf="@+id/titleView"
-        app:layout_constraintTop_toBottomOf="@+id/titleView"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        app:layout_constraintBottom_toBottomOf="@+id/descriptionView"
+        app:layout_constraintRight_toRightOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toTopOf="@+id/titleView" />
 
     <TextView
         android:id="@+id/titleView"
-        android:layout_width="145dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="New Text"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintLeft_toLeftOf="@+id/constraintLayout2"
+        app:layout_constraintRight_toLeftOf="@+id/dateView"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout2"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 
     <TextView
         android:id="@+id/descriptionView"
-        android:layout_width="170dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:text="Medium Text"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintLeft_toLeftOf="@+id/titleView"
+        app:layout_constraintRight_toLeftOf="@+id/dateView"
         app:layout_constraintTop_toBottomOf="@+id/titleView" />
 
 </android.support.constraint.ConstraintLayout>

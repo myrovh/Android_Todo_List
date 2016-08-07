@@ -2,6 +2,7 @@ package myrovh.to_dolistreminder;
 
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,11 @@ class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             titleView = (TextView) v.findViewById(R.id.titleView);
             descriptionView = (TextView) v.findViewById(R.id.descriptionView);
             dateView = (TextView) v.findViewById(R.id.dateView);
+            titleView.setSingleLine();
+            titleView.setEllipsize(TextUtils.TruncateAt.END);
+            descriptionView.setSingleLine();
+            descriptionView.setEllipsize(TextUtils.TruncateAt.END);
+            dateView.setSingleLine();
 
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
