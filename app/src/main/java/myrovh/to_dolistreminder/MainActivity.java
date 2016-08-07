@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
@@ -24,13 +27,14 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     final static String REQUEST_INTENT = "intent";
     final static int REQUEST_NEW = 20;
     final static int REQUEST_EDIT = 30;
     final static int REQUEST_DELETE = 40;
     final static int REQUEST_LOCATION = 50;
     final static int REQUEST_SELECT = 60;
+    final static String PREFERENCES_SORT = "sortMode";
     final static String BUNDLE_REMINDERS = "reminderList";
     final static String BUNDLE_ID = "reminderId";
     private final static String SETTING_FIRSTSTART = "firstStart";
@@ -80,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
             todoRecyclerView.hasFixedSize();
             todoRecyclerView.setAdapter(globalAdapter);
         }
+
+        //Setup Sort Mode Selection Spinner
+        Spinner optionSpinner = (Spinner) findViewById(R.id.option_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        optionSpinner.setAdapter(adapter);
+        optionSpinner.setOnItemSelectedListener(this);
 
         //Set Recycler View Listener (open edit EditReminderActivity activity on item click)
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
@@ -182,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Fetch all reminders from the database then sort
     private void listRefresh() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortMode = preferences.getString(PREFERENCES_SORT, "Day");
+        Log.d("SORT", "Sort mode current defined as " + sortMode);
         todoData.clear();
         todoData.addAll(database.getAllReminders());
         Collections.sort(todoData, new Comparator<Reminder>() {
@@ -190,6 +204,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         globalAdapter.notifyDataSetChanged();
+    }
+
+    //When a sort option is selected
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String sortOption = (String) adapterView.getItemAtPosition(i);
+        SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        edit.putString(PREFERENCES_SORT, sortOption);
+        edit.commit();
+        listRefresh();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
 
