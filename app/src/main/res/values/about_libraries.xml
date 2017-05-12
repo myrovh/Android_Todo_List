@@ -15,9 +15,7 @@
     <!-- Custom variables section -->
     <string name="library_GooglePlayServices_owner">AOSP</string>
     <string name="library_GooglePlayServices_year">2015</string>
-
     <!--TODO include google API licence description -->
-
     <string name="define_parceler"></string>
     <string name="library_parceler_author">John Ericksen</string>
     <string name="library_parceler_authorWebsite">https://github.com/johncarl81</string>

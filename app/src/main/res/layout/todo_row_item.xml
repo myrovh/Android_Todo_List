@@ -50,5 +50,4 @@
         app:layout_constraintLeft_toLeftOf="@+id/constraintLayout2"
         app:layout_constraintRight_toLeftOf="@+id/dateView"
         app:layout_constraintTop_toBottomOf="@+id/titleView" />
-
 </android.support.constraint.ConstraintLayout>

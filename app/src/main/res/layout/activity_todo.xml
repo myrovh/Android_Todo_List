@@ -20,7 +20,6 @@
         app:layout_constraintTop_toTopOf="@+id/constraintLayout4"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/titleView"
         android:layout_width="0dp"
@@ -75,7 +74,6 @@
         app:layout_constraintLeft_toLeftOf="@+id/constraintLayout4"
         app:layout_constraintTop_toBottomOf="@+id/descriptionView" />
 
-
     <Button
         android:id="@+id/setDateButton"
         style="?android:attr/buttonStyleSmall"
@@ -96,14 +94,13 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="date"
+        android:text="@string/date"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintBottom_toBottomOf="@+id/setDateButton"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/setDateButton"
         app:layout_constraintRight_toRightOf="@+id/constraintLayout4"
         app:layout_constraintTop_toTopOf="@+id/setDateButton" />
-
 
     <Button
         android:id="@+id/setLocationButton"
@@ -116,7 +113,6 @@
         android:text="@string/set_location_auto"
         app:layout_constraintLeft_toLeftOf="@+id/constraintLayout4"
         app:layout_constraintTop_toBottomOf="@+id/setDateButton" />
-
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -159,5 +155,4 @@
         android:text="@string/set_location_clear"
         app:layout_constraintLeft_toRightOf="@+id/button2"
         app:layout_constraintTop_toTopOf="@+id/button2" />
-
 </android.support.constraint.ConstraintLayout>

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
-
     private GoogleMap mMap;
     private TextView tapTextView;
     private ArrayList<Reminder> todoData = new ArrayList<>();
@@ -32,13 +31,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         //Get Views
         tapTextView = (TextView) findViewById(R.id.tap_text);
-
         //Get intent bundles
         todoData = Parcels.unwrap(getIntent().getParcelableExtra(MainActivity.BUNDLE_REMINDERS));
     }
@@ -46,12 +42,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         // Set Camera position to default location
         LatLng defaultLocation = new LatLng(-34, 151);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation));
         tapTextView.setText("Tap a markers title to open the edit screen");
-
         //Add markers for reminder locations markers are stored in a map so we can attach the reminder id to remember which reminder a marker belongs to
         for (Object obj : todoData) {
             if (obj instanceof Reminder) {
@@ -61,7 +55,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
-
         //Set Listeners
         mMap.setOnInfoWindowClickListener(this);
     }

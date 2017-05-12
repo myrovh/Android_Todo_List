@@ -16,7 +16,6 @@ import java.util.Date;
 class ReminderDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "reminderDatabase";
     private static final int DATABASE_VERSION = 2;
-
     private static final String TABLE_REMINDERS = "reminders";
     private static final String KEY_REMINDERS_ID = "_id";
     private static final String KEY_REMINDERS_TITLE = "title";
@@ -25,7 +24,6 @@ class ReminderDatabase extends SQLiteOpenHelper {
     private static final String KEY_REMINDERS_COMPLETE = "complete";
     private static final String KEY_REMINDERS_LATITUDE = "latitude";
     private static final String KEY_REMINDERS_LONGITUDE = "longitude";
-
     private static final String QUERY_ALLREMINDERS = String.format("SELECT * FROM %s", TABLE_REMINDERS);
 
     ReminderDatabase(Context context) {
@@ -38,11 +36,10 @@ class ReminderDatabase extends SQLiteOpenHelper {
         values.put(KEY_REMINDERS_DESCRIPTION, reminder.getDescription());
         values.put(KEY_REMINDERS_COMPLETE, (reminder.isComplete()) ? 1 : 0); //Convert boolean to int
         values.put(KEY_REMINDERS_DUEDATE, reminder.getDueDateAsEpoc());
-        if(reminder.latitude == null) {
+        if (reminder.latitude == null) {
             values.putNull(KEY_REMINDERS_LATITUDE);
             values.putNull(KEY_REMINDERS_LONGITUDE);
-        }
-        else {
+        } else {
             values.put(KEY_REMINDERS_LATITUDE, reminder.getLocation().latitude);
             values.put(KEY_REMINDERS_LONGITUDE, reminder.getLocation().longitude);
         }
@@ -51,15 +48,7 @@ class ReminderDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "(" +
-                KEY_REMINDERS_ID + " INTEGER PRIMARY KEY," +
-                KEY_REMINDERS_TITLE + " TEXT," +
-                KEY_REMINDERS_DESCRIPTION + " TEXT," +
-                KEY_REMINDERS_COMPLETE + " INT," +
-                KEY_REMINDERS_DUEDATE + " LONG," +
-                KEY_REMINDERS_LATITUDE + " LONG," +
-                KEY_REMINDERS_LONGITUDE + " LONG" + ")";
-
+        String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "(" + KEY_REMINDERS_ID + " INTEGER PRIMARY KEY," + KEY_REMINDERS_TITLE + " TEXT," + KEY_REMINDERS_DESCRIPTION + " TEXT," + KEY_REMINDERS_COMPLETE + " INT," + KEY_REMINDERS_DUEDATE + " LONG," + KEY_REMINDERS_LATITUDE + " LONG," + KEY_REMINDERS_LONGITUDE + " LONG" + ")";
         sqLiteDatabase.execSQL(CREATE_REMINDERS_TABLE);
     }
 
@@ -75,7 +64,6 @@ class ReminderDatabase extends SQLiteOpenHelper {
 
     void addReminder(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
-
         db.beginTransaction();
         try {
             ContentValues values = createContentValues(reminder);
@@ -92,7 +80,6 @@ class ReminderDatabase extends SQLiteOpenHelper {
     //Transaction will only be successful if a single row is edited
     void editReminder(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
-
         db.beginTransaction();
         ContentValues values = createContentValues(reminder);
         int affectedRows;
@@ -107,7 +94,6 @@ class ReminderDatabase extends SQLiteOpenHelper {
 
     public void deleteReminder(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
-
         db.beginTransaction();
         int affectedRows;
         affectedRows = db.delete(TABLE_REMINDERS, KEY_REMINDERS_ID + " = ?", new String[]{String.valueOf(reminder.getId())});
@@ -126,18 +112,9 @@ class ReminderDatabase extends SQLiteOpenHelper {
         try {
             if (cursor.moveToFirst()) {
                 do {
-                    Reminder newReminder = new Reminder(
-                            cursor.getInt(cursor.getColumnIndex(KEY_REMINDERS_ID)),
-                            cursor.getString(cursor.getColumnIndex(KEY_REMINDERS_TITLE)),
-                            cursor.getString(cursor.getColumnIndex(KEY_REMINDERS_DESCRIPTION)),
-                            dateToCalendar(new Date(cursor.getLong(cursor.getColumnIndex(KEY_REMINDERS_DUEDATE)))),
-                            1 == cursor.getInt(cursor.getColumnIndex(KEY_REMINDERS_COMPLETE)),
-                            null,
-                            null);
-                    if(!cursor.isNull(cursor.getColumnIndex(KEY_REMINDERS_LATITUDE))) {
-                        LatLng location = new LatLng(
-                                cursor.getDouble(cursor.getColumnIndex(KEY_REMINDERS_LATITUDE)),
-                                cursor.getDouble(cursor.getColumnIndex(KEY_REMINDERS_LONGITUDE)));
+                    Reminder newReminder = new Reminder(cursor.getInt(cursor.getColumnIndex(KEY_REMINDERS_ID)), cursor.getString(cursor.getColumnIndex(KEY_REMINDERS_TITLE)), cursor.getString(cursor.getColumnIndex(KEY_REMINDERS_DESCRIPTION)), dateToCalendar(new Date(cursor.getLong(cursor.getColumnIndex(KEY_REMINDERS_DUEDATE)))), 1 == cursor.getInt(cursor.getColumnIndex(KEY_REMINDERS_COMPLETE)), null, null);
+                    if (!cursor.isNull(cursor.getColumnIndex(KEY_REMINDERS_LATITUDE))) {
+                        LatLng location = new LatLng(cursor.getDouble(cursor.getColumnIndex(KEY_REMINDERS_LATITUDE)), cursor.getDouble(cursor.getColumnIndex(KEY_REMINDERS_LONGITUDE)));
                         newReminder.setLocation(location);
                     }
                     reminderList.add(newReminder);

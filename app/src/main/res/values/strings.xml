@@ -13,4 +13,5 @@
     <string name="titleHint">Title</string>
     <string name="about">About</string>
     <string name="map">Map</string>
+    <string name="date">date</string>
 </resources>

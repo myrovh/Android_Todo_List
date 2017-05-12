@@ -58,22 +58,17 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapFragment);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
-
-
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(appToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         //Setup Views
         titleText = (TextInputLayout) findViewById(R.id.titleView);
         descriptionText = (TextInputLayout) findViewById(R.id.descriptionView);
         doneSwitch = (Switch) findViewById(R.id.doneSwitch);
         dueDateView = (TextView) findViewById(R.id.dateView);
-
         //Get intent data
         todoPosition = getIntent().getIntExtra("position", -1);
         activityIntent = getIntent().getIntExtra(MainActivity.REQUEST_INTENT, -1);
@@ -86,7 +81,6 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
             editTodo.setDueDate(Calendar.getInstance());
         }
     }
-
 
     private void setDefaultLocation() {
         //TODO application crashes if there is no last known location
@@ -155,7 +149,6 @@ public class EditReminderActivity extends AppCompatActivity implements DatePicke
     public void setDueDate(View v) {
         showDatePickerDialog(v);
     }
-
 
     public void setAutomaticLocation(View v) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

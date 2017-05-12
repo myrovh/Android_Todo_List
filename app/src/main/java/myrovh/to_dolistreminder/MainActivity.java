@@ -65,14 +65,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         new MaterializeBuilder().withActivity(this).build();
         JodaTimeAndroid.init(this);
-
         //Setup Toolbar
         Toolbar appToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(appToolbar);
-
         //Get database helper
         database = new ReminderDatabase(getApplicationContext());
-
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -81,17 +78,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (isFirstStart) {
                     database.addReminder(new Reminder(1, "Test", "First Test Entry", Calendar.getInstance(), false, null, null));
                     database.addReminder(new Reminder(2, "Test2", "Second Test Entry", Calendar.getInstance(), false, null, null));
-
                     SharedPreferences.Editor e = getPrefs.edit();
                     e.putBoolean(SETTING_FIRSTSTART, false);
                     e.apply();
                 }
             }
         });
-
         //If this is the first time running the app insert some test data into the database
         t.start();
-
         //Setup RecyclerView
         RecyclerView todoRecyclerView = (RecyclerView) findViewById(R.id.todoRecyclerView);
         RecyclerView.LayoutManager todoLayout = new LinearLayoutManager(this);
@@ -101,14 +95,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             todoRecyclerView.hasFixedSize();
             todoRecyclerView.setAdapter(headerAdapter.wrap(globalAdapter));
         }
-
         //Setup Sort Mode Selection Spinner
         Spinner optionSpinner = (Spinner) findViewById(R.id.option_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         optionSpinner.setAdapter(adapter);
         optionSpinner.setOnItemSelectedListener(this);
-
         //Set Recycler View Listener (open edit EditReminderActivity activity on item click)
         /*
         globalAdapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
@@ -118,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         */
-
         globalAdapter.withSelectable(true);
         globalAdapter.withOnClickListener(new FastAdapter.OnClickListener<ReminderItem>() {
             @Override
@@ -127,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             }
         });
-
         listRefresh();
     }
 
@@ -187,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (resultCode == 1) {
             returnValue = returnData.getIntExtra(EditReminderActivity.RETURN_INTENT, -1);
         }
-
         if (resultCode == 1 && returnValue == REQUEST_DELETE) {
             Reminder resultTodo = Parcels.unwrap(returnData.getParcelableExtra("todo"));
             Log.d("MAIN", "Reminder delete called on reminder id " + resultTodo.getId());
@@ -227,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String sortMode = preferences.getString(PREFERENCES_SORT, "Day");
         DateTime currentDate = DateTime.now();
         Log.d("SORT", "Sort mode current defined as " + sortMode);
-
         globalAdapter.clear();
         todoData.clear();
         ArrayList<Reminder> tempData = new ArrayList<>();
@@ -237,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return r1.getDueDate().compareTo(r2.getDueDate());
             }
         });
-
         if (!Objects.equals(sortMode, "Completed")) {
             //Remove any completed tasks from the list
             for (Iterator<Reminder> iterator = tempData.iterator(); iterator.hasNext(); ) {
@@ -263,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
             }
-
             //Depending on which sort mode has been selected determines what groups are created
             switch (sortMode) {
                 case "Day":
@@ -275,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             iterator.remove();
                         }
                     }
-
                     int futureCounter = 1;
                     while (futureCounter < 7) {
                         DateTime currentCount = currentDate.plusDays(futureCounter);
@@ -324,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                     break;
             }
-
             //Any dates beyond scope of sorting method go here
             todoData.add("Other");
             for (Reminder i : tempData) {
@@ -341,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         }
-
         for (Object i : todoData) {
             if (i instanceof Reminder) {
                 Reminder temp = (Reminder) i;
@@ -369,7 +352,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 }
 

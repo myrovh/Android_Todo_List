@@ -28,11 +28,10 @@ public class Reminder {
         this.dueDate = new DateTime(dueDate);
         this.isComplete = isComplete;
         //Ensure null input always apply to both lat and long
-        if(latitude == null || longitude == null) {
+        if (latitude == null || longitude == null) {
             this.latitude = null;
             this.longitude = null;
-        }
-        else {
+        } else {
             this.latitude = latitude;
             this.longitude = longitude;
         }
