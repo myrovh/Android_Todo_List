@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
 
+import java.util.List;
+
 import myrovh.to_dolistreminder.R;
 
 public class ReminderItem extends AbstractItem<ReminderItem, ReminderItem.ViewHolder> {
@@ -33,13 +35,17 @@ public class ReminderItem extends AbstractItem<ReminderItem, ReminderItem.ViewHo
 
     //The logic to bind your data to the view
     @Override
-    public void bindView(ViewHolder viewHolder) {
+    public void bindView(ViewHolder holder, List<Object> payloads) {
         //call super so the selection is already handled for you
-        super.bindView(viewHolder);
+        super.bindView(holder, payloads);
+        holder.titleView.setText(title);
+        holder.descriptionView.setText(description);
+        holder.dueDateView.setText(dueDate);
+    }
 
-        viewHolder.titleView.setText(title);
-        viewHolder.descriptionView.setText(description);
-        viewHolder.dueDateView.setText(dueDate);
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast
